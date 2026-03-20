@@ -76,7 +76,7 @@
             {{-- Content --}}
             <div class="flex items-center gap-4 mb-5">
                 <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                    <img src="/images/icons/icon-192x192.png" alt="CakeCraft Logo" class="w-10 h-10 object-contain">
+                    <img src="/images/icons/icon-192x192.png" alt="{{ config('app.name') }}" class="w-10 h-10 object-contain">
                 </div>
                 <div class="flex-1">
                     <h3 class="text-lg font-display font-bold text-espresso leading-tight">

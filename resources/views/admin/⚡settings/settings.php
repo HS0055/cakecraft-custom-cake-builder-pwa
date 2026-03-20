@@ -369,7 +369,7 @@ new #[Layout('layouts::admin', ['title' => 'System Settings'])] class extends Co
     {
         switch ($tab) {
             case 'general':
-                $this->store_name = 'CakeCraft';
+                $this->store_name = config('app.name', 'Monteh Bakery');
                 $this->store_email = 'admin@cakecraft.test';
                 $this->store_phone = '';
                 $this->store_address = '';

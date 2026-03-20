@@ -1,10 +1,10 @@
 <?php
 
 return [
-    'name' => 'CakeCraft',
+    'name' => env('APP_NAME', 'Monteh Bakery'),
     'manifest' => [
-        'name' => env('APP_NAME', 'CakeCraft'),
-        'short_name' => 'CakeCraft',
+        'name' => env('APP_NAME', 'Monteh Bakery'),
+        'short_name' => env('APP_NAME', 'Monteh Bakery'),
         'start_url' => '/',
         'background_color' => '#ffffff',
         'theme_color' => '#ff70a2',
