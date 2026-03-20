@@ -59,10 +59,12 @@ class PwaIconGenerator
         }
 
         try {
-            // Generate a 32x32 PNG favicon (modern browsers accept PNG)
+            // Generate a 32x32 PNG favicon and copy as .ico (browsers accept PNG)
+            $faviconPng = public_path('favicon.png');
             Image::load($sourcePath)
                 ->fit(Fit::Contain, 32, 32)
-                ->save(public_path('favicon.ico'));
+                ->save($faviconPng);
+            copy($faviconPng, public_path('favicon.ico'));
 
             // Update the fallback logo images used when no branding URL is set
             Image::load($sourcePath)

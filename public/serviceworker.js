@@ -1,4 +1,5 @@
-var staticCacheName = "pwa-v" + new Date().getTime();
+var CACHE_VERSION = '1774044105';
+var staticCacheName = "pwa-v" + CACHE_VERSION;
 var filesToCache = [
     '/offline/',
     '/images/icons/icon-72x72.png',
