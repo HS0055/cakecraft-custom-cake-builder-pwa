@@ -13,8 +13,10 @@
         href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Playfair+Display:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link rel="icon" type="image/x-icon"
-        href="{{ settings(\App\Settings\BrandingSettings::class)->favicon_url ?: asset('images/logo.png') }}">
+    @php $favVer = file_exists(public_path('favicon.ico')) ? '?v=' . filemtime(public_path('favicon.ico')) : ''; @endphp
+    <link rel="icon" type="image/png"
+        href="{{ settings(\App\Settings\BrandingSettings::class)->favicon_url ?: asset('images/logo.png') }}{{ $favVer }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}{{ $favVer }}">
 
     <x-appearance-styles />
     @livewireStyles

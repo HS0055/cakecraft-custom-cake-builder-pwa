@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\System;
+use App\Services\PwaIconGenerator;
 use Illuminate\Support\Facades\DB;
 use App\Settings\AppearanceSettings;
 use App\Settings\BrandingSettings;
@@ -269,13 +270,31 @@ new #[Layout('layouts::admin', ['title' => 'System Settings'])] class extends Co
             }
 
             if ($this->logo) {
+                $logoRealPath = $this->logo->getRealPath();
                 $system->addMedia($this->logo)->toMediaCollection('logo');
                 $branding->logo_url = $system->getFirstMediaUrl('logo');
+
+                // Regenerate PWA icons from new logo
+                $mediaPath = $system->getFirstMedia('logo')?->getPath();
+                if ($mediaPath && file_exists($mediaPath)) {
+                    PwaIconGenerator::generateFromLogo($mediaPath);
+                } elseif ($logoRealPath && file_exists($logoRealPath)) {
+                    PwaIconGenerator::generateFromLogo($logoRealPath);
+                }
             }
 
             if ($this->favicon) {
+                $faviconRealPath = $this->favicon->getRealPath();
                 $system->addMedia($this->favicon)->toMediaCollection('favicon');
                 $branding->favicon_url = $system->getFirstMediaUrl('favicon');
+
+                // Update public/favicon.ico and fallback logos
+                $mediaPath = $system->getFirstMedia('favicon')?->getPath();
+                if ($mediaPath && file_exists($mediaPath)) {
+                    PwaIconGenerator::updateFavicon($mediaPath);
+                } elseif ($faviconRealPath && file_exists($faviconRealPath)) {
+                    PwaIconGenerator::updateFavicon($faviconRealPath);
+                }
             }
             $branding->save();
             $this->logChanges('branding', $oldBranding, $captureState($branding, array_keys($oldBranding)));

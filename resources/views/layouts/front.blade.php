@@ -45,7 +45,12 @@
         href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Comfortaa:wght@300..700&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Playfair+Display:wght@400;500;600;700&display=swap"
         rel="stylesheet">
 
-    <link rel="icon" type="image/x-icon" href="{{ $brandingSettings->favicon_url ?: asset('images/logo.png') }}">
+    @php
+        $faviconHref = $brandingSettings->favicon_url ?: asset('images/logo.png');
+        $faviconVersion = file_exists(public_path('favicon.ico')) ? filemtime(public_path('favicon.ico')) : '';
+    @endphp
+    <link rel="icon" type="image/png" href="{{ $faviconHref }}{{ $faviconVersion ? '?v=' . $faviconVersion : '' }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}{{ $faviconVersion ? '?v=' . $faviconVersion : '' }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <x-appearance-styles />

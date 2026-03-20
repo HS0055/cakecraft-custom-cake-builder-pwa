@@ -1,4 +1,7 @@
-FROM php:8.3-cli-alpine
+FROM php:8.4-cli-alpine
+
+# Verify PHP 8.4
+RUN php -v && php -r "if(PHP_VERSION_ID < 80400){echo 'WRONG PHP VERSION';exit(1);}"
 
 # Install system dependencies
 RUN apk add --no-cache \
@@ -41,25 +44,25 @@ COPY composer.json composer.lock ./
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Copy package files
-COPY package.json package-lock.json ./
+# Copy application code
+COPY . .
+
+# Create .env with SQLite for build-time artisan commands
+RUN cp .env.example .env && \
+    sed -i 's/DB_CONNECTION=mysql/DB_CONNECTION=sqlite/' .env && \
+    sed -i 's/DB_DATABASE=laravel//' .env
+
+# Set permissions + create SQLite DB before any artisan commands
+RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions \
+    storage/framework/views storage/app/public bootstrap/cache && \
+    chmod -R 775 storage bootstrap/cache && \
+    touch database/database.sqlite
 
 # Install Node dependencies and build assets
 RUN npm ci && npm run build
 
-# Copy application code
-COPY . .
-
 # Run composer scripts after full copy
 RUN composer run-script post-autoload-dump
-
-# Set permissions
-RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions \
-    storage/framework/views bootstrap/cache && \
-    chmod -R 775 storage bootstrap/cache
-
-# Create SQLite database file
-RUN touch database/database.sqlite
 
 # Expose port
 EXPOSE 8080

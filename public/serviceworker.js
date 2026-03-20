@@ -1,5 +1,6 @@
 var staticCacheName = "pwa-v" + new Date().getTime();
 var filesToCache = [
+    '/offline/',
     '/images/icons/icon-72x72.png',
     '/images/icons/icon-96x96.png',
     '/images/icons/icon-128x128.png',
@@ -12,16 +13,16 @@ var filesToCache = [
 
 // Cache on install
 self.addEventListener("install", event => {
-    this.skipWaiting();
     event.waitUntil(
         caches.open(staticCacheName)
             .then(cache => {
                 return cache.addAll(filesToCache);
             })
-    )
+            .then(() => self.skipWaiting())
+    );
 });
 
-// Clear cache on activate
+// Clear old caches on activate and take control immediately
 self.addEventListener('activate', event => {
     event.waitUntil(
         caches.keys().then(cacheNames => {
@@ -31,7 +32,7 @@ self.addEventListener('activate', event => {
                     .filter(cacheName => (cacheName !== staticCacheName))
                     .map(cacheName => caches.delete(cacheName))
             );
-        })
+        }).then(() => self.clients.claim())
     );
 });
 
@@ -49,7 +50,7 @@ self.addEventListener("fetch", event => {
                 return response || fetch(event.request);
             })
             .catch(() => {
-                return caches.match('offline').then(r => r || new Response('Offline', { status: 503 }));
+                return caches.match('/offline/').then(r => r || new Response('Offline', { status: 503 }));
             })
     );
 });
